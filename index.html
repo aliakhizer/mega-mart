@@ -23,7 +23,7 @@
             <img src="./images/Buy.svg" alt="cart-img" />
             <span class="cart-title">Cart</span>
           </div>
-          <div class="cart-text">1</div>
+          <div class="cart-text"></div>
         </div>
 
         <div class="search-container">
@@ -36,7 +36,8 @@
             </select>
             <input
               type="text"
-              class="search-input"
+              oninput="search()"
+              id="search-input"
               placeholder="Search here..."
             />
           </div>
@@ -52,6 +53,7 @@
     <section class="phone-gallery container">
       <div class="gallery-title">Results</div>
       <div class="gallery-grid"></div>
+      <button class="add-to-cart">add to cart</button>
     </section>
 
     <script src="./javascript.js"></script>
