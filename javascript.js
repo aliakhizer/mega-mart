@@ -1,3 +1,17 @@
+const container = document.querySelector(".gallery-grid");
+const input = document.getElementById("search-input");
+
+const cart = document.querySelector(".cart-text");
+const addToCartButton = document.querySelector(".add-to-cart");
+
+function getCategory(val) {
+  fetch("https://fakestoreapi.com/products/category/" + val)
+    .then((response) => response.json())
+    .then((data) => {
+      displayProducts(data);
+    });
+}
+
 function getRating(ratingValue) {
   let stars = "";
   for (let i = 1; i <= 5; i++) {
@@ -9,97 +23,72 @@ function getRating(ratingValue) {
   }
   return stars;
 }
-
-let result;
-
-function search() {
-  const input = document.getElementById("search-input").value.toLowerCase();
-
-  const filteredProducts = products.filter((product) =>
-    product.title.toLowerCase().includes(input)
-  );
-
-  const container = document.querySelector(".gallery-grid");
-  container.innerHTML = "";
-
-  filteredProducts.forEach((product) => {
-    const { title, price, image, rating } = product;
-    const ratingValue = Math.round(rating.rate);
-    const stars = getRating(ratingValue);
-
-    container.innerHTML += `
-                <div class="gallery-item">
-                    <div class="gallery-image">
-                        <img src="${image}" alt="${title}" />
-                    </div>
-                    <div class="phone-info">
-                        <div class="phone-details">
-                            <div class="phone-title">${title}</div>
-                            <div class="phone-price">$${price}</div>
-                        </div>
-                        <div class="phone-actions">
-                            <div class="star-ratings">${stars}</div>
-                            <button class="add-to-cart">Add to Cart</button>
-                        </div>
-                        <div class="off-percent">
-                            <div>56%</div>
-                            <div>OFF</div>
-                        </div>
-                    </div>
-                </div>
-                `;
-  });
+let count = 0;
+function counter() {
+  count++;
+  cart.innerHTML = count;
 }
 
-let count = 0;
-const counter = function () {
-  count++;
-  console.log(count);
+const leaveMouse = (element) => {
+  element.children[1].children[1].children[1].style.display = "none";
+  element.children[0].classList.remove("overlay-effect");
 };
+const enterMouse = (element) => {
+  element.children[1].children[1].children[1].style.display = "block";
+  element.children[0].classList.add("overlay-effect");
+};
+function fetchProducts() {
+  fetch("https://fakestoreapi.com/products")
+    .then((response) => response.json())
+    .then((data) => {
+      displayProducts(data);
+    });
+}
 
-let products;
+function displayProducts(products) {
+  container.innerHTML = "";
+  const val = input.value.toLowerCase();
 
-const button = document.querySelector(".add-to-cart");
-button.addEventListener("click", counter);
+  products
+    .filter((product) => product.title.toLowerCase().includes(val))
 
-const container = document.querySelector(".gallery-grid");
-
-fetch("https://fakestoreapi.com/products")
-  .then((response) => {
-    return response.json();
-  })
-  .then((data) => {
-    products = data;
-
-    products.map((product) => {
-
-
-     
-
-      const { title, price, image, rating } = product;
-
+    .forEach((product) => {
+      const { id, title, price, image, rating } = product;
       const ratingValue = Math.round(rating.rate);
       const stars = getRating(ratingValue);
 
-      return (container.innerHTML += `
-                    <div class="gallery-item">
-                        <div class="gallery-image">
-                            <img src="${image}" alt="${title}" />
-                        </div>
-                        <div class="phone-info">
-                            <div class="phone-details">
-                                <div class="phone-title">${title}</div>
-                                <div class="phone-price">$${price}</div>
-                            </div>
-                            <div class="phone-actions">
-                                <div class="star-ratings">${stars}</div>
-                                <button class="add-to-cart">Add to Cart</button>
-                            </div>
-                            <div class="off-percent">
-                                <div>56%</div>
-                                <div>OFF</div>
-                            </div>
-                        </div>
-                    `);
+      if (!products.length) {
+        container.innerHTML = "<p>No products found</p>";
+        return;
+      }
+
+      container.innerHTML += `
+    <div class="gallery-item" onmouseleave="leaveMouse(this)" onmouseenter="enterMouse(this)">
+        <div class="gallery-image">
+
+            <img src="${image}" alt="${title}" />
+        </div>
+        <div class="phone-info">
+            <div class="phone-details">
+                <div class="phone-title">${title}</div>
+                <div class="phone-price">$${price}</div>
+            </div>
+            <div class="phone-actions">
+                <div class="star-ratings">${stars}</div>
+                <button class="add-to-cart" id=${id} onClick="counter()">Add to Cart</button>
+            </div>
+            <div class="off-percent">
+                <div>56%</div>
+                <div>OFF</div>
+            </div>
+        </div>
+    </div>
+  `;
     });
-  });
+}
+
+function search() {
+  fetchProducts();
+}
+
+fetchProducts();

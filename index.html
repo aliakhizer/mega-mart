@@ -28,32 +28,42 @@
 
         <div class="search-container">
           <div class="search-options">
-            <select class="search-dropdown">
-              All
-              <option value="option1">All</option>
-              <option value="option2"></option>
-              <option value="option3"></option>
+            <select
+              class="search-dropdown"
+              id="category-dropdown"
+              onclick="getCategory(value)"
+             
+            >
+              <option value="">All</option>
+              <option value="jewelery">Jewelry</option>
+              <option value="men's clothing">Men's Clothing</option>
+              <option value="electronics">Electronics</option>
+              <option value="women's clothing">Women's Clothing</option>
             </select>
-            <input
-              type="text"
-              oninput="search()"
-              id="search-input"
-              placeholder="Search here..."
-            />
-          </div>
-          <div class="search-img">
-            <img src="./images/Search.svg" alt="search-img" with:50% />
-          </div>
+            <div class="input">
+              <input
+                type="text"
+                oninput="search()"
+                id="search-input"
+                placeholder="Search here..."
+              />
+            
+            </div>
+            <div><img class="search-img" src="./images/Search.svg" alt="search" />
         </div>
-      </div>
+              
+        </div>
+      
     </section>
 
     <!-- gallary section -->
 
     <section class="phone-gallery container">
       <div class="gallery-title">Results</div>
-      <div class="gallery-grid"></div>
-      <button class="add-to-cart">add to cart</button>
+      <div class="gallery-grid">
+        
+      </div>
+    
     </section>
 
     <script src="./javascript.js"></script>
