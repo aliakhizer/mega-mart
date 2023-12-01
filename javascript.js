@@ -1,11 +1,16 @@
-// function getRating(ratingValue) {
-//   console.log(ratingValue);
-//   if (i <= ratingValue) {
-//     return `<img src="./images/Star1.svg" alt="Star" />`;
-//   } else {
-//     return `<img src="./images/Star5.svg" alt="Star" />`;
-//   }
-// }
+const container = document.querySelector(".gallery-grid");
+const input = document.getElementById("search-input");
+
+const cart = document.querySelector(".cart-text");
+const addToCartButton = document.querySelector(".add-to-cart");
+
+function getCategory(val) {
+  fetch("https://fakestoreapi.com/products/category/" + val)
+    .then((response) => response.json())
+    .then((data) => {
+      displayProducts(data);
+    });
+}
 
 function getRating(ratingValue) {
   let stars = "";
@@ -18,43 +23,72 @@ function getRating(ratingValue) {
   }
   return stars;
 }
+let count = 0;
+function counter() {
+  count++;
+  cart.innerHTML = count;
+}
 
-const container = document.querySelector(".gallery-grid");
+const leaveMouse = (element) => {
+  element.children[1].children[1].children[1].style.display = "none";
+  element.children[0].classList.remove("overlay-effect");
+};
+const enterMouse = (element) => {
+  element.children[1].children[1].children[1].style.display = "block";
+  element.children[0].classList.add("overlay-effect");
+};
+function fetchProducts() {
+  fetch("https://fakestoreapi.com/products")
+    .then((response) => response.json())
+    .then((data) => {
+      displayProducts(data);
+    });
+}
 
-fetch("https://fakestoreapi.com/products")
-  .then((response) => {
-    return response.json();
-  })
-  .then((data) => {
-    let products = data;
-    products.map((product) => {
-      const { title, price, image, rating } = product;
+function displayProducts(products) {
+  container.innerHTML = "";
+  const val = input.value.toLowerCase();
 
+  products
+    .filter((product) => product.title.toLowerCase().includes(val))
+
+    .forEach((product) => {
+      const { id, title, price, image, rating } = product;
       const ratingValue = Math.round(rating.rate);
-      console.log(ratingValue);
       const stars = getRating(ratingValue);
 
-      return (container.innerHTML += `
-      <div class="gallery-item">
-          <div class="gallery-image">
+      if (!products.length) {
+        container.innerHTML = "<p>No products found</p>";
+        return;
+      }
+
+      container.innerHTML += `
+    <div class="gallery-item" onmouseleave="leaveMouse(this)" onmouseenter="enterMouse(this)">
+        <div class="gallery-image">
+
             <img src="${image}" alt="${title}" />
-          </div>
-          
-          <div class="phone-info">
+        </div>
+        <div class="phone-info">
             <div class="phone-details">
-              <div class="phone-title">${title}</div>
-              <div class="phone-price">$${price}</div>
+                <div class="phone-title">${title}</div>
+                <div class="phone-price">$${price}</div>
             </div>
             <div class="phone-actions">
-              <div class="star-ratings">${stars}</div>
-              <button class="add-to-cart">Add to Cart</button>
+                <div class="star-ratings">${stars}</div>
+                <button class="add-to-cart" id=${id} onClick="counter()">Add to Cart</button>
             </div>
             <div class="off-percent">
-              <div>56%</div>
-              <div>OFF</div>
+                <div>56%</div>
+                <div>OFF</div>
             </div>
-        
         </div>
-        `);
+    </div>
+  `;
     });
-  });
+}
+
+function search() {
+  fetchProducts();
+}
+
+fetchProducts();
